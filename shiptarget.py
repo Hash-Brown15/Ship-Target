@@ -1,80 +1,42 @@
-"""An example of using animate() and clock scheduling to move actors around.
-
-There are two actors in this example, each with a different movement strategy.
-
-The block
----------
-
-The block moves in a loop aroun the screen
-
-* We schedulethe move_block() function to be called every 2 seconds using
-clock.schedule_interval.
-* The next position of the block is given by calling next() on a "cycle"
-object, returned by itertools.cycle(). This will cycle through the block
-coordinates we provide it ,repeating without end.
-* We use animate() to move the block
-
-
-The ship
---------
-
-The ship moves in a random dance in the middle of the screen. The ship
-flips back and forth between a rotation phase and movement phase 
-
-
-* next_ship_target(): pick a new target location for the ship at random, and
-animate rotating the ship to aim it. When the rotation animation is
-complete, we will call move_ship().
-* move_ship(): Move the ship to its target. When the move animation is
-complete, we will call Next_ship_target().
-
-
-"""
-import random
 import itertools
 import pgzrun
-
+import pygame
 
 WIDTH = 400
 HEIGHT = 400
 
-
-# Define four sets of coordinates for the block to move between
-BLOCK_POSITIONS = [
-    (350,50),
-    (350,350),
-    (50,350),
-    (50,50),
+MEDALLION_POSITIONS = [
+    (500,500),
+    (500,230),
+    (230,230),
+    (230,500),
 ]
-# The "cycle()" function will let us cycle though the positions indefinately
-block_positions = itertools.cycle(BLOCK_POSITIONS)
+medallion_positions = itertools.cycle(MEDALLION_POSITIONS)
 
+medallion = Actor('medallion', center= (500,500)) 
 
-block = Actor('block', center=(50, 50))
-ship = Actor('player', center=(200,200))
-
+medallion.scale=0.01
+medallion._surf = pygame.transform.scale(medallion._surf, (100,100))
+medallion._update_pos()
 
 def draw():
     screen.clear()
-    block.draw()
-    ship.draw()
+    medallion.draw()
 
 
-#BLock movement
-#--------------
-
-def move_block():
-    """Move the block to the next position over 1 second."""
+def move_medallion():
     animate(
-        block,
+        medallion,
         'bounce_end',
         duration = 1,
-        pos = next(block_positions)
+        pos = next(medallion_positions)
     )
 
 
 
-move_block() # start one mocve now
-clock.schedule_interval(move_block, 2) # schedule subsequent moves
+move_medallion()
+clock.schedule_interval(move_medallion, 2)
+
+
 
 pgzrun.go()
